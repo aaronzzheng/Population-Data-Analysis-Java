@@ -1,0 +1,90 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
+public class PopulationDataAnalysis {
+	   
+	   public static void displayFile(String fname, Scanner scnr) {
+	        try { 
+	           File textFile = new File(fname);
+	           Scanner textReader = new Scanner(textFile);
+	           
+	           //prompts user for number of counties
+	           System.out.print("Enter the number of counties: ");
+	           int numCounties = scnr.nextInt();
+	           
+	           //creates arrays
+	           String [] county = new String[numCounties];
+	           int [] pop2010 = new int[numCounties];
+	           int [] pop2019 = new int[numCounties];
+	           
+	           
+	           //skips the first line of file
+	           textReader.nextLine();
+	           //puts data in array
+	           insertData(numCounties, scnr, textReader, county, pop2010, pop2019);
+	           
+	           textReader.close();
+	           
+	           //prints debug
+	           debug(county, pop2010, pop2019);
+	           
+	           //finds and prints the difference in population
+	           difference(numCounties, pop2019, pop2010, county);
+	           
+	        } catch (FileNotFoundException e) {
+	           System.out.println("ERROR - File " + fname + " not found!");
+	           System.out.println();
+	        }
+	   }
+	   
+	   public static void insertData(int numCounties, Scanner scnr, Scanner textReader, String [] county, 
+	                                 int [] pop2010, int [] pop2019) {
+	      for (int i = 0; i < numCounties && scnr.hasNextLine(); i++) {
+	         String [] vals = textReader.nextLine().split(",");
+	         county[i] = vals[0];
+	         pop2010[i] = Integer.parseInt(vals[1]);
+	         pop2019[i] = Integer.parseInt(vals[10]);
+	      }
+	   }
+	   
+	   public static void debug(String [] county, int [] pop2010, int [] pop2019) {
+	      System.out.print("DEBUG: [");
+	      System.out.print(county[0]);
+	         for (int i = 1; i < county.length; i++) {
+	            System.out.print(", " + county[i]);
+	         }
+	      debug2(pop2010);
+	      debug2(pop2019);
+	      System.out.print("]");
+	      System.out.println();
+	   }
+	   
+	   public static void debug2(int [] array) {
+	      System.out.print("]");
+	      System.out.println();
+	      System.out.print("DEBUG: [");
+	      System.out.print(array[0]);
+	         for (int i = 1; i < array.length; i++) {
+	            System.out.print(", " + array[i]);
+	         }
+	   }
+	   
+	   public static void difference(int numCounties, int [] pop2019, int [] pop2010, String [] county) {
+	      for (int i = 0; i < numCounties; i++) {
+	         int difference = pop2019[i] - pop2010[i];
+	         System.out.println(county[i] + " " + difference);
+	      }
+	   }
+	   
+	   public static void main(String[] args) {
+	      Scanner scnr = new Scanner(System.in);
+	    
+	    //prompts user for a file name
+	      System.out.print("Enter a data file to read: ");
+	      String fname = scnr.nextLine();
+	      File file = new File(fname);
+	      displayFile(fname, scnr);
+	      
+	   }
+}
